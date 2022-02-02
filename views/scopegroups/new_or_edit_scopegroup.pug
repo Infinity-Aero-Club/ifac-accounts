@@ -1,0 +1,55 @@
+extends ../dashboard_layout
+
+block interactable
+    if error
+        .alert.alert-danger #{error}
+    h1= isNew ? "New Role" : "Edit Role"
+    form#delete-form(method="post")
+        input(type='hidden' name='action' value='delete')
+    button.btn.btn-primary(type='submit' form="edit-form" style={"margin-bottom": "10px", "margin-right": "10px"})
+        i.bi.bi-save
+        |  Save
+    if !isNew
+        button.btn.btn-danger(type="button" style={"margin-bottom": "10px"} data-bs-toggle='modal' data-bs-target=`#delete-role-modal`)
+            i.bi.bi-trash
+            |  Delete
+        .modal.fade#delete-role-modal(tabindex='-1')
+            .modal-dialog 
+                .modal-content
+                    .modal-header
+                        h5.modal-title Are you sure you want to delete role #{scopegroup.name}?
+                        button.btn-close(type='button' data-bs-dismiss='modal')
+                    .modal-footer
+                        button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Cancel
+                        button.btn.btn-danger(type="submit" form="delete-form") Delete
+    form#edit-form(method="post")
+        input(type='hidden' name='action' value='edit')
+        h3.form-section-header General Details
+        div
+            label.form-label Name
+                input(type="text" name="name" class="form-control" required value=scopegroup && scopegroup.name)
+
+        h3 Permissions
+        each app in appScopes
+            .jumbotron 
+                h4 #{app.name} permissions
+                div.scope-selectors 
+                    each scope in app.scopes.sort()
+                        .scope-radios
+                            input(id=`scope-radio-${app.shtName}.${scope}-grant` type='radio' name=`scope-${app.shtName}.${scope}` value='grant' checked=(scopegroup && scopegroup.scopes.includes(`${app.shtName}.${scope}`)))
+                            label.scope-radio-grant(for=`scope-radio-${app.shtName}.${scope}-grant`) 
+                                i.bi.bi-check
+                            input(id=`scope-radio-${app.shtName}.${scope}-deny` type='radio' name=`scope-${app.shtName}.${scope}` value='deny' checked=(!scopegroup || !scopegroup.scopes.includes(`${app.shtName}.${scope}`)))
+                            label.scope-radio-deny(for=`scope-radio-${app.shtName}.${scope}-deny`)
+                                i.bi.bi-x
+                            span= scope
+        button.btn.btn-primary(type='submit')
+            i.bi.bi-save
+            |  Save
+
+
+
+
+
+
+

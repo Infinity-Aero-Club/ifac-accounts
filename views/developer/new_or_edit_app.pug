@@ -1,0 +1,48 @@
+extends dev_dashboard_layout
+
+block interactable
+    if error
+        .alert.alert-danger #{error}
+    h1= isNew ? "New Application" : "Edit Application"
+    form#delete-form(method="post")
+        input(type='hidden' name='action' value='delete')
+    button.btn.btn-primary(type='submit' form="edit-form" style={"margin-bottom": "10px", "margin-right": "10px"})
+        i.bi.bi-save
+        |  Save
+    if !isNew
+        button.btn.btn-danger(type="button" style={"margin-bottom": "10px"} data-bs-toggle='modal' data-bs-target=`#delete-role-modal`)
+            i.bi.bi-trash
+            |  Delete
+        .modal.fade#delete-role-modal(tabindex='-1')
+            .modal-dialog 
+                .modal-content
+                    .modal-header
+                        h5.modal-title Are you sure you want to delete application #{app.name}?
+                        button.btn-close(type='button' data-bs-dismiss='modal')
+                    .modal-footer
+                        button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Cancel
+                        button.btn.btn-danger(type="submit" form="delete-form") Delete
+    form#edit-form(method="post")
+        input(type='hidden' name='action' value='edit')
+        div
+            label.form-label Name
+                input(type="text" name="name" class="form-control" required value=app && app.name)
+        div
+            label.form-label Short Name
+                input(type="text" name="sht_name" class="form-control" required value=app && app.shtName)
+        div
+            label.form-label Redirect Urls (each on new line)
+                textarea(type="text" name="redirect_urls" class="form-control" style={"min-width": "50em", "min-height": "10em"})
+                    if app
+                        =app.redirectUrls.join("\n")
+
+        button.btn.btn-primary(type='submit')
+            i.bi.bi-save
+            |  Save
+
+
+
+
+
+
+

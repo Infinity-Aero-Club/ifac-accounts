@@ -1,0 +1,10 @@
+extends layout
+
+block head
+  link(rel='stylesheet', href='/css/index.css')
+
+block content
+  .container(style={"margin-top": "50px"})
+    .jumbotron.index-box
+      img(src="/img/ifac-long-alpha.png", alt="Infinity Aero Club", style={"max-width": "100%"})
+      a.btn.btn-primary.btn-lg(href="/login") Login

@@ -1,0 +1,11 @@
+extends dev_dashboard_layout
+
+block interactable
+  h1 Apps
+  a.btn.btn-primary(style={"margin-bottom": "10px"}, href="/developer/apps/new")
+    i.bi.bi-plus-circle
+    |  New App
+  div 
+    ul.list-group.items-list
+      each app in apps 
+        a.list-group-item.list-group-item-action(href=`/developer/apps/${app.id}`)= app.name

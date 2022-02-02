@@ -1,0 +1,11 @@
+extends ../dashboard_layout
+
+block interactable
+  h1 Users
+  a.btn.btn-primary(style={"margin-bottom": "10px"}, href="/users/new")
+    i.bi.bi-plus-circle
+    |  New User
+  div 
+    ul.list-group.items-list
+      each user in users 
+        a.list-group-item.list-group-item-action(href=`/users/${user.id}`)= user.name

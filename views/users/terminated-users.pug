@@ -1,0 +1,8 @@
+extends ../dashboard_layout
+
+block interactable
+  h1 Terminated Users
+  div 
+    ul.list-group.items-list
+      each user in users 
+        a.list-group-item.list-group-item-action(href=`/users/${user.id}`)= user.name

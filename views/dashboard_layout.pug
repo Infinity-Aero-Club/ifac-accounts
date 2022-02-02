@@ -1,0 +1,21 @@
+extends layout
+
+block head
+    link(rel='stylesheet', href='/css/dashboard.css')
+
+block content
+    nav.navbar.navbar-expand-lg.navbar-light.bg-light
+        .container-fluid.dash-header
+            div 
+                img(src="/img/ifac-square-alpha.png" style={"height": "50px", "margin-left": "30px"})
+                span.navbar-brand(style={"margin-left": "30px"}) Infinity Aero Club
+            span(style={"margin-right": "30px"}) #{userFullName} (#{userName}) - 
+                a.link-danger(href="/logout") Logout
+    .dashboard-container
+        div(class="col-4 col-lg-2")
+            nav(class="navbar navbar-light bg-light nav-sidebar nav-pills")
+                a(class="nav-link" href="/users" class=(page === "users" ? "active" : undefined)) Active Users
+                a(class="nav-link" href="/users/terminated" class=(page === "terminated-users" ? "active" : undefined)) Terminated Users
+                a(class="nav-link" href="/roles" class=(page === "roles" ? "active" : undefined)) Roles
+        div(class="col-8 col-lg-10 dash-interact")
+            block interactable

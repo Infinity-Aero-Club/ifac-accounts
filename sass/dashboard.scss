@@ -1,0 +1,45 @@
+.dashboard-container {
+    display: flex;
+    margin: 50px;
+    justify-content: flex-start;
+}
+
+.nav-sidebar {
+    flex-direction: column;
+}
+
+.dash-interact {
+    margin-left: 30px;
+}
+
+.pin-display {
+    display: inline;
+    max-width: 100px;
+}
+
+.ptpwd-display {
+    display: inline;
+    max-width: 200px;
+}
+
+.dash-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.scope-list {
+    display: inline-flex;
+    flex-wrap: wrap;
+
+    span {
+        margin: 10px;
+    }
+}
+
+.user-items-list {
+    background-color: transparent;
+
+    .user-item {
+        background-color: transparent;
+    }
+}

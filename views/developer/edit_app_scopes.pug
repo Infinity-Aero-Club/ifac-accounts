@@ -1,0 +1,65 @@
+extends dev_dashboard_layout
+
+append head 
+  link(rel="stylesheet", href="/css/app.css")
+
+block interactable
+  if error
+    .alert.alert-danger=error
+  if message
+    .alert.alert-success=message
+
+  h1 Edit scopes for #{app.name}
+  a.btn.btn-secondary(style={"margin-bottom": "10px"}, href=`/developer/apps/${app.id}`)
+      i.bi.bi-arrow-left
+      |  Back
+
+  div 
+    button.btn.btn-primary#show-new-scope-button(style={"margin-bottom": "10px"})
+      i.bi.bi-plus-circle
+      |  New Scope
+
+    form.form-box#new-scope-form(method="post" style={"margin-bottom": "20px", "display": "none"})
+      input(type='hidden' name='action' value='new-scope')
+      div
+          label(class="form-label") Scope Name
+            input(type="text" name="scope-name" class="form-control" required)
+      div 
+        .form-check.form-switch
+          label.form-check-label Pin Allowed
+            input#flexSwitchCheckDefault.form-check-input(type='checkbox' name="pin-allowed")
+      div 
+        .form-check.form-switch
+          label.form-check-label Extended Login Allowed
+            input#flexSwitchCheckDefault.form-check-input(type='checkbox' name="extended-login-allowed")
+      button(type="submit" class="btn btn-primary" style={"margin-top": "10px"})
+        i.bi.bi-plus-circle
+        |  New Scope
+
+  div
+    if app.scopes.length < 1
+      p None
+    each scope in app.scopes.sort((a, b) => a.name.localeCompare(b.name))
+      div#items-container
+        .item-details-container
+          .item-details 
+            b= scope.name
+            div Pin Allowed: #{scope.details.pinAllowed ? "Yes" : "No"}
+            div Extended Login Allowed: #{scope.details.extendedLoginAllowed ? "Yes" : "No"}
+          .item-actions
+            button.btn.btn-danger(type="button" data-bs-toggle='modal' data-bs-target=`#delete-scope-${scope.name}-modal`)
+                i.bi.bi-trash
+            form(method="post" id=`delete-scope-${scope.name}-form`)
+              input(type='hidden' name='action' value='delete-scope')
+              input(type='hidden' name='scope' value=scope.name)
+            .modal.fade(tabindex='-1' id=`delete-scope-${scope.name}-modal`)
+                .modal-dialog 
+                    .modal-content
+                        .modal-header
+                            h5.modal-title Are you sure you want to delete scope #{scope.name}?
+                            button.btn-close(type='button' data-bs-dismiss='modal')
+                        .modal-footer
+                            button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Cancel
+                            button.btn.btn-danger(type="submit" form=`delete-scope-${scope.name}-form`) Delete
+
+  script(src="/js/new_scope_form_visibility.js")

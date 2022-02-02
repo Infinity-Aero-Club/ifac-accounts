@@ -1,0 +1,24 @@
+version: "3.8"
+
+services:
+  main:
+    build: Dockerfile
+    restart: always
+    volumes:
+      - openid-keys:/usr/src/app/keys
+    labels: 
+        traefik.enable: "true"
+        traefik.http.routers.ifacaccounts-http-redirect.entrypoints: "http"
+        traefik.http.routers.ifacaccounts-http-redirect.middlewares: "redirect-to-https"
+        traefik.http.routers.ifacaccounts-http-redirect.rule: "Host(`sso.ifac.nathankutzan.info`)"
+        traefik.http.routers.ifacaccounts.entrypoints: "https"
+        traefik.http.routers.ifacaccounts.rule: "Host(`sso.ifac.nathankutzan.info`)"
+        traefik.http.routers.ifacaccounts.tls.certresolver: "le"
+
+networks:
+  default:
+    external: true
+    name: by-internal
+
+volumes:
+  openid-keys:

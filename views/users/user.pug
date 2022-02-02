@@ -1,0 +1,175 @@
+extends ../dashboard_layout
+
+block interactable
+  if message
+    .alert.alert-success=message
+  h1 User
+  if !user.terminated
+    a.btn.btn-primary(style={"margin-bottom": "10px"}, href=`/users/${user.id}/edit`)
+      i.bi.bi-pencil
+      |  Edit User
+    a.btn.btn-primary(style={"margin-left": "10px", "margin-bottom": "10px"}, href=`/users/${user.id}/resetpassword`)
+      i.bi.bi-asterisk
+      |  Reset Password
+  else
+    form#reinstate-form(method="post")
+      input(type="hidden" name="action" value="reinstate")
+    form#delete-form(method="post")
+      input(type="hidden" name="action" value="delete")
+    button.btn.btn-warning(type="submit" style={"margin-bottom": "10px"} form="reinstate-form")
+      i.bi.bi-arrow-counterclockwise
+      |  Reinstate User
+    button.btn.btn-danger(type="button" style={"margin-left": "10px", "margin-bottom": "10px"} data-bs-toggle='modal' data-bs-target=`#delete-user-modal`)
+      i.bi.bi-trash
+      |  Delete User
+    .modal.fade#delete-user-modal(tabindex='-1')
+      .modal-dialog 
+        .modal-content
+          .modal-header
+            h5.modal-title Are you sure you want to delete user #{user.fullName}?
+            button.btn-close(type='button' data-bs-dismiss='modal')
+          .modal-footer
+            button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Cancel
+            button.btn.btn-danger(type="submit" form="delete-form") Delete
+
+  h4= user.fullName
+  p ID: #{user.id}
+  p Username: #{user.username}
+  if !user.terminated
+    p Admin: #{user.admin ? "Yes" : "No"}
+    p Pin: 
+      input.form-control.pin-display#pin-display(type='password' value=user.pin disabled)
+      button.btn.btn-light#pin-visibility-button
+        i.bi.bi-eye
+  p Onboard Date: #{user.onboardDate ? new Intl.DateTimeFormat('en-US', { timeZone: "UTC" }).format(new Date(user.onboardDate * 1000)) : "None"}
+  if user.terminatedAt
+    p Terminated on: 
+      span(data-timestamp=user.terminatedAt data-timestampoptions=JSON.stringify({dateStyle: "short", timeStyle: "short"}))
+  
+  if !user.terminated
+    h3(style={"margin-top": "30px"}) Permissions
+    .jumbotron 
+      p Role: 
+        if user.scopegroup != null
+          a(href=`/roles/${user.scopegroup.id}`)= user.scopegroup.name
+        else
+          span None
+      span Scopes:
+      .scope-list
+        each scope in user.scopes.sort()
+          span= scope
+
+  h3(style={"margin-top": "30px"}) Files
+  button.btn.btn-primary#show-file-upload-button(style={"margin-bottom": "10px"})
+    i.bi.bi-plus-circle
+    |  Upload File
+
+  form.form-box#file-upload-form(method="post" enctype="multipart/form-data" style={"margin-bottom": "20px", "display": "none"})
+    input(type='hidden' name='action' value='upload-file')
+    div
+        label(class="form-label" for="file-name") File Name
+        input(type="text" name="file-name" class="form-control" id="file-name" required style={"max-width": "400px"})
+    div
+      input.form-control(type='file' name='file' id="file-upload" style={"margin-top": "10px", "max-width": "400px"} required)
+    button(type="submit" class="btn btn-primary" style={"margin-top": "10px"})
+      i.bi.bi-plus-circle
+      |  Upload File
+
+  .jumbotron 
+    ul.list-group.user-items-list
+      if user.files.length === 0
+        span No files uploaded
+      each file in user.files
+        li.list-group-item.user-item
+          a(href=file.url target="_blank")= file.name
+          span
+            |  - 
+          span(data-timestamp=file.uploadTimestamp*1000 data-timestampoptions=JSON.stringify({dateStyle: "short", timeStyle: "short"}))
+          span
+            |  - 
+          a.icon-link(href=file.url target="_blank" data-bs-toggle="tooltip" title="View") 
+            i.bi.bi-eye-fill
+          a.icon-link(download=file.name href=file.url target="_blank" data-bs-toggle="tooltip" title="Download") 
+            i.bi.bi-download
+          form(method="post" style="display: none;" id=`delete-file-${file.id}`)
+            input(type="hidden" name="action" value="delete-file")
+            input(type="hidden" name="file-id" value=file.id)
+          button.link-danger.icon-link(type='button' data-bs-toggle='modal' data-bs-target=`#delete-file-modal-${file.id}`) 
+            i.bi.bi-trash-fill
+          .modal.fade(tabindex='-1' id=`delete-file-modal-${file.id}`)
+            .modal-dialog 
+              .modal-content
+                .modal-header
+                  h5.modal-title Are you sure you want to delete file #{file.name}?
+                  button.btn-close(type='button' data-bs-dismiss='modal')
+                .modal-footer
+                  button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Cancel
+                  button.btn.btn-danger(type="submit" form=`delete-file-${file.id}`) Delete
+
+
+
+  h3(style={"margin-top": "30px"}) Notes
+  button.btn.btn-primary#show-add-note-button(style={"margin-bottom": "10px"})
+    i.bi.bi-plus-circle
+    |  Add Note
+
+  form.form-box#add-note-form(method="post" enctype="multipart/form-data" style={"margin-bottom": "20px", "display": "none"})
+    input(type='hidden' name='action' value='add-note')
+    div
+        label(class="form-label" for="note-name") Note Title
+        input#note-name(type="text" name="note-name" class="form-control" required style={"max-width": "400px"})
+    div
+      label(class="form-label" for="note-contents") Note
+      textarea#note-contents(type="text" name="note-contents" class="form-control" style={"min-width": "50em", "min-height": "10em"})
+    button(type="submit" class="btn btn-primary" style={"margin-top": "10px"})
+      i.bi.bi-plus-circle
+      |  Add Note
+
+  .jumbotron 
+    ul.list-group.user-items-list
+      if user.notes.length === 0
+        span No notes
+      each note in user.notes
+        li.list-group-item.user-item
+          span= note.name
+          span
+            |  - 
+          span(data-timestamp=note.timestamp*1000 data-timestampoptions=JSON.stringify({dateStyle: "short", timeStyle: "short"}))
+          span
+            |  - 
+          button.icon-link(type='button' data-bs-toggle='modal' data-bs-target=`#view-note-modal-${note.id}`) 
+            i.bi.bi-eye-fill
+          .modal.fade(tabindex='-1' id=`view-note-modal-${note.id}`)
+            .modal-dialog 
+              .modal-content
+                .modal-header
+                  h5.modal-title Note: #{note.name}
+                  button.btn-close(type='button' data-bs-dismiss='modal')
+                .modal-body
+                  p(style={"white-space": "pre-wrap"})= note.content
+                .modal-footer
+                  button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
+          form(method="post" style="display: none;" id=`delete-note-${note.id}`)
+            input(type="hidden" name="action" value="delete-note")
+            input(type="hidden" name="note-id" value=note.id)
+          button.link-danger.icon-link(type='button' data-bs-toggle='modal' data-bs-target=`#delete-note-modal-${note.id}`) 
+            i.bi.bi-trash-fill
+          .modal.fade(tabindex='-1' id=`delete-note-modal-${note.id}`)
+            .modal-dialog 
+              .modal-content
+                .modal-header
+                  h5.modal-title Are you sure you want to delete note #{note.name}?
+                  button.btn-close(type='button' data-bs-dismiss='modal')
+                .modal-footer
+                  button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Cancel
+                  button.btn.btn-danger(type="submit" form=`delete-note-${note.id}`) Delete
+          
+          
+
+  
+
+  script(src="/js/pin_visibility.js") 
+  script(src="/js/ptpwd_visibility.js") 
+  script(src="/js/upload_form_visibility.js")
+  script(src="/js/note_form_visibility.js") 
+  

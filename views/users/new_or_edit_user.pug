@@ -1,0 +1,71 @@
+extends ../dashboard_layout
+
+block interactable
+  if error
+      .alert.alert-danger #{error}
+  h1= isNew ? "New User" : "Edit User"
+  form#terminate-form(method="post")
+    input(type='hidden' name='action' value='terminate')
+  button.btn.btn-primary(type='submit' form="edit-form" style={"margin-right": "10px"})
+    i.bi.bi-save
+    |  Save
+  if !isNew
+    button.btn.btn-danger(type='submit' form="terminate-form")
+      i.bi.bi-x
+      |  Terminate
+  form#edit-form(method="post")
+    input(type='hidden' name='action' value='edit')
+    h3.form-section-header General Details
+    div
+        label.form-label Full Name
+          input(type="text" name="full-name" class="form-control" required value=user && user.fullName)
+    div
+        label.form-label Username
+          input(type="text" name="username" class="form-control" required value=user && user.username)
+    div
+        label.form-label Pin
+          input(type="text" name="pin" class="form-control" required value=user && user.pin)
+    div.form-check
+      label.form-check-label.form-label Admin
+        input.form-check-input#admin-checkbox(type='checkbox' name="admin" checked=(user && user.admin) onclick="updatePermissionsVisible()")
+    div 
+      label.form-label Onboard Date
+        input(type='date' name='onboard-date' class="form-control" required value=user && new Date(user.onboardDate * 1000).toISOString().split('T')[0])
+
+    #permissions 
+      h3.form-section-header Permissions
+      div 
+        label.form-label Role
+          select.form-select(name="scopegroup")
+            option(value='') None
+            each group in scopeGroups
+              option(value=group.id selected=(user && user.scopegroup && user.scopegroup.id===group.id))= group.name
+      div 
+        each app in appScopes 
+          .jumbotron 
+            h4 #{app.name} permissions
+            div.scope-selectors 
+              each scope in app.scopes.sort()
+                .scope-radios
+                  input(id=`scope-radio-${app.shtName}.${scope}-grant` type='radio' name=`scope-${app.shtName}.${scope}` value='grant' checked=(user && user.allowedScopes.includes(`${app.shtName}.${scope}`)))
+                  label.scope-radio-grant(for=`scope-radio-${app.shtName}.${scope}-grant`) 
+                    i.bi.bi-check
+                  input(id=`scope-radio-${app.shtName}.${scope}-inherit` type='radio' name=`scope-${app.shtName}.${scope}` value='inherit' checked=(!user || (!user.allowedScopes.includes(`${app.shtName}.${scope}`)) && !user.disallowedScopes.includes(`${app.shtName}.${scope}`)))
+                  label.scope-radio-inherit(for=`scope-radio-${app.shtName}.${scope}-inherit`)
+                    i.bi.bi-slash
+                  input(id=`scope-radio-${app.shtName}.${scope}-deny` type='radio' name=`scope-${app.shtName}.${scope}` value='deny' checked=(user && user.disallowedScopes.includes(`${app.shtName}.${scope}`)))
+                  label.scope-radio-deny(for=`scope-radio-${app.shtName}.${scope}-deny`)
+                    i.bi.bi-x
+                  span= scope
+    button.btn.btn-primary(type='submit')
+      i.bi.bi-save
+      |  Save
+
+  script(src="/js/user_edit_permissions.js") 
+
+
+
+
+
+
+

@@ -1,0 +1,106 @@
+$primary: #78aa3b;
+
+@import "../node_modules/bootstrap/scss/bootstrap";
+
+.btn-primary {
+    color: white;
+}
+
+.form-box {
+    padding: 1.5rem;
+    margin: 1rem -.75rem 0;
+    border: solid #dee2e6;
+    margin-right: 0;
+    margin-left: 0;
+    border-width: 1px;
+    border-top-left-radius: .25rem;
+    border-top-right-radius: .25rem;
+}
+
+.form-label {
+    margin-top: 10px;
+}
+
+.form-section-header {
+    margin-top: 20px;
+}
+
+.jumbotron {
+    padding: 2rem 1rem;
+    margin-bottom: 2rem;
+    background-color: #e9ecef;
+    border-radius: .3rem;
+}
+
+.footer {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
+
+.icon-link {
+    text-decoration: none;
+    margin-left: 5px;
+    margin-right: 5px;
+    color: inherit;
+    border: none;
+}
+
+.scope-radios input[type="radio"] {
+    display: none;
+}
+
+.scope-radios {
+    label {
+        display: inline-block;
+        padding: 4px 11px;
+        font-family: Arial;
+        font-size: 16px;
+        cursor: pointer;
+        border-style: solid;
+        border-color: transparent;
+        margin-bottom: 10px;
+    }
+    span {
+        margin-left: 10px;
+        margin-right: 60px;
+    }
+}
+
+label.scope-radio-grant {
+    background-color: $green-300;
+}
+
+input[type="radio"]:checked+label.scope-radio-grant {
+    background-color: $green-500;
+    border-color: black;
+}
+
+label.scope-radio-inherit {
+    background-color: $gray-300;
+}
+
+input[type="radio"]:checked+label.scope-radio-inherit {
+    background-color: $gray-500;
+    border-color: black;
+}
+
+label.scope-radio-deny {
+    background-color: $red-300;
+}
+
+input[type="radio"]:checked+label.scope-radio-deny {
+    background-color: $red-500;
+    border-color: black;
+}
+
+.scope-selectors {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.items-list {
+    max-width: 400px;;
+}

@@ -1,0 +1,90 @@
+extends dev_dashboard_layout
+
+append head 
+  link(rel="stylesheet", href="/css/app.css")
+
+block interactable
+  if error
+        .alert.alert-danger=error
+  if message
+      .alert.alert-success=message
+
+  h1 Application
+  a.btn.btn-primary(style={"margin-bottom": "10px"}, href=`/developer/apps/${app.id}/edit`)
+      i.bi.bi-pencil
+      |  Edit App
+  a.btn.btn-primary(style={"margin-bottom": "10px", "margin-left": "10px"}, href=`/developer/apps/${app.id}/edit/scopes`)
+      i.bi.bi-pencil
+      |  Edit Scopes
+  
+  h4= app.name
+  p ID: #{app.id}
+  p Short name: #{app.shtName}
+
+  h5(style={"margin-top": "30px"}) Redirect Urls
+
+  div
+    if app.redirectUrls.length < 1
+      p None
+    each redirectUrl in app.redirectUrls.sort((a, b) => a.localeCompare(b))
+      div
+        .item-details-container
+          .item-details
+            p= redirectUrl
+
+  h5(style={"margin-top": "30px"}) Scopes
+
+  div
+    if app.scopes.length < 1
+      p None
+    each scope in app.scopes.sort((a, b) => a.name.localeCompare(b.name))
+      div
+        .item-details-container
+          .item-details 
+            b= scope.name
+            div Pin Allowed: #{scope.details.pinAllowed ? "Yes" : "No"}
+            div Extended Login Allowed: #{scope.details.extendedLoginAllowed ? "Yes" : "No"}
+
+
+
+  h5(style={"margin-top": "30px"}) Tokens
+
+  button.btn.btn-primary#show-new-token-button(style={"margin-bottom": "10px"})
+    i.bi.bi-plus-circle
+    |  New Token
+
+  form.form-box#new-token-form(method="post" style={"margin-bottom": "20px", "display": "none"})
+    input(type='hidden' name='action' value='new-token')
+    div
+        label(class="form-label") Token Name
+          input(type="text" name="token-name" class="form-control" required)
+    button(type="submit" class="btn btn-primary" style={"margin-top": "10px"})
+      i.bi.bi-plus-circle
+      |  New Token
+
+  div
+    each token in app.tokens
+      div
+        .item-details-container
+          .item-details 
+            b= token.name
+            div ID: #{token.id}
+            div Created on: 
+              span(data-timestamp=token.createdAt*1000 data-timestampoptions=JSON.stringify({dateStyle: "short", timeStyle: "short"}))
+          .item-actions
+            button.btn.btn-danger(type="button" data-bs-toggle='modal' data-bs-target=`#delete-token-${token.id}-modal`)
+                i.bi.bi-trash
+            form(method="post" id=`delete-token-${token.id}-form`)
+              input(type='hidden' name='action' value='delete-token')
+              input(type='hidden' name='token' value=token.id)
+            .modal.fade(tabindex='-1' id=`delete-token-${token.id}-modal`)
+                .modal-dialog 
+                    .modal-content
+                        .modal-header
+                            h5.modal-title Are you sure you want to delete token #{token.id}?
+                            button.btn-close(type='button' data-bs-dismiss='modal')
+                        .modal-footer
+                            button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Cancel
+                            button.btn.btn-danger(type="submit" form=`delete-token-${token.id}-form`) Delete
+
+  script(src="/js/new_token_form_visibility.js")

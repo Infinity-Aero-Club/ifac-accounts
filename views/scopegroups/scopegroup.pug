@@ -1,0 +1,22 @@
+extends ../dashboard_layout
+
+block interactable
+  h1 Role
+  a.btn.btn-primary(style={"margin-bottom": "10px"}, href=`/roles/${scopegroup.id}/edit`)
+      i.bi.bi-pencil
+      |  Edit Role
+  
+  h4= scopegroup.name
+  h6(style={"margin-top": "20px"}) Users:
+  each user in users
+    p(style={"margin-left": "1em"})
+      a(href=`/users/${user.id}`)= user.name 
+  if users.length < 1
+    p(style={"margin-left": "1em"}) None
+  div(style={"margin-top": "20px"})
+    each app in appScopes 
+      .jumbotron 
+        h4 #{app.name} permissions
+        div 
+          each scope in app.scopes.filter(v => scopegroup.scopes.includes(`${app.shtName}.${v}`)).sort()
+            span(style={"margin-left": "20px"})= scope
