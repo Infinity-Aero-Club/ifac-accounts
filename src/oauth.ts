@@ -8,11 +8,7 @@ import { asyncFilter } from "./util"
 import { genIdToken } from "./openid"
 import { OauthError } from "../routes/oauth/error"
 
-export const selfUrl = process.env.SELF_URL!
-
-if (selfUrl == null) {
-    throw new Error("SELF_URL is not set")
-}
+export const selfUrl = process.env.SELF_URL ?? "https://sso.ifac.nathankutzan.info"
 
 export async function generateOauthCode(userId: string, appIds: string[], scopes: string[], usedPin: boolean, nonce: string | null): Promise<string> {
     for (const scope of scopes) {

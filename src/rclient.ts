@@ -1,7 +1,7 @@
 import redis, { OverloadedCommand } from "redis"
 import { promisify } from "util"
 
-const rclient = redis.createClient({ host: process.env.REDISHOST ?? "by-redis-live" })
+const rclient = redis.createClient({ host: process.env.REDISHOST ?? "redis" })
 rclient.on("error", function(error) {
   console.error(error)
 })

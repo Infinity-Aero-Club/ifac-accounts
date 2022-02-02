@@ -1,11 +1,7 @@
 import * as Minio from 'minio';
 
 const bucketName = "ifacaccounts"
-const endPoint = process.env.CDN_ENDPOINT
-
-if (endPoint == null) {
-    throw new Error("CDN_ENDPOINT is not set")
-}
+const endPoint = process.env.CDN_ENDPOINT ?? "redis"
 
 const cdnLogin = process.env.CDN_LOGIN
 

@@ -4,6 +4,8 @@ services:
   main:
     build: .
     restart: always
+    environment:
+      - CDN_LOGIN
     volumes:
       - openid-keys:/usr/src/app/keys
     labels: 
