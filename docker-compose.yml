@@ -15,7 +15,7 @@ services:
         traefik.http.routers.ifacaccounts-http-redirect.rule: "Host(`sso.ifac.nathankutzan.info`)"
         traefik.http.routers.ifacaccounts.entrypoints: "https"
         traefik.http.routers.ifacaccounts.rule: "Host(`sso.ifac.nathankutzan.info`)"
-        traefik.http.routers.ifacaccounts.tls.certresolver: "le"
+        traefik.http.routers.ifacaccounts.tls.certresolver: "cre"
 
 networks:
   default:
