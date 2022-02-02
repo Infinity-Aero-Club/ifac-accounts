@@ -18,7 +18,7 @@ services:
 networks:
   default:
     external: true
-    name: by-internal
+    name: internal
 
 volumes:
   openid-keys:
